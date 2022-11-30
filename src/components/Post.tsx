@@ -1,45 +1,39 @@
-import React, {useState} from 'react';
+import React, {FormEvent, useState} from 'react';
 import Avatar from './Avatar';
-import Comment from './Comment';
+import Comment, {CommentProps} from './Comment';
 
-interface PostProps {
-
+interface ContentProps {
+  type: 'paragraph' | 'link';
+  content: string;
 }
 
-interface Comment {
-  id: number,
-  profileImg: string,
-  profile: string,
-  time: string,
-  content: string,
-  isLiked: boolean,
-  likeCount: number
+export interface PostProps {
+  id: number;
+  profileImg: string;
+  profile: string;
+  role: string;
+  time: string;
+  content: ContentProps[];
+  comments: CommentProps[];
 }
 
-const comments = [
-  {
-    id: 1,
-    profileImg: 'https://github.com/victorh1705.png',
-    profile: 'Victor Henrique',
-    time: 'Publicado há 1 hora',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim dui, venenatis quis malesuada et, posuere vel felis. Nullam dignissim accumsan neque, eu luctus ligula.',
-    isLiked: true,
-    likeCount: 15,
-  },
-  {
-    id: 2,
-    profileImg: 'https://github.com/victorh1705.png',
-    profile: 'Victor Henrique',
-    time: 'Publicado há 2 hora',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim dui, venenatis quis malesuada et, posuere vel felis. Nullam dignissim accumsan neque, eu luctus ligula.',
-    isLiked: false,
-    likeCount: 1,
-  },
-] as Comment[]
-
-export default function Post(props: PostProps) {
+export default function Post({comments, content, profile, profileImg, role, time}: PostProps) {
 
   const [commentsArray, setCommentsArray] = useState(comments);
+  const [newComment, setNewComment] = useState('');
+
+  function handleOnTextSubmit(event: FormEvent) {
+    event.preventDefault()
+
+    let first = Object.assign({}, commentsArray.at(0))
+    if (first) {
+      first.content = newComment
+      first.id = Math.random() % 1000
+      setCommentsArray(prevState => [...prevState, first as CommentProps]);
+    }
+
+    setNewComment('')
+  }
 
   function handleOnDelete(id: number) {
     setCommentsArray(state => state.filter(item => item.id !== id))
@@ -50,43 +44,46 @@ export default function Post(props: PostProps) {
 
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Avatar hasBorder src="https://github.com/victorh1705.png"/>
+          <Avatar hasBorder src={profileImg}/>
           <div>
-            <strong className="block text-white text-base">Victor Henrique</strong>
-            <span className="block text-neutral-600 text-sm">Dev iOS</span>
+            <strong className="block text-white text-base">{profile}</strong>
+            <span className="block text-neutral-400 text-sm">{role}</span>
           </div>
         </div>
-        <time className="text-neutral-600 text-sm">Publicado há 1 hora</time>
+        <time className="text-neutral-400 text-sm">{time}</time>
       </header>
 
       <div className="my-6">
-        <p className="text-neutral-400 [&+p]:pt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-          enim dui,
-          venenatis quis malesuada et,
-          posuere vel felis. Nullam dignissim accumsan neque, eu luctus ligula. Sed quis ligula aliquam,
-          condimentum velit eget, sagittis orci. Integer volutpat libero ut nisi ullamcorper, eget feugiat velit
-          molestie. Integer tempus rhoncus ipsum, dapibus sagittis urna tincidunt aliquam. Curabitur ac ipsum sit
-        </p>
-
-        <p className="text-neutral-400">
-          Ut libero orci, hendrerit ut elit ut, ultricies fermentum nulla. Praesent nec pretium dui. Integer
-          eleifend, ante ut luctus porta, lacus urna convallis quam, sit amet lacinia enim urna eget ante.
-          Praesent
-        </p>
+        {content.map(({type, content}) => {
+          switch (type) {
+            case 'link':
+              return <a className="text-emerald-600 [&+p]:pt-4">{content}</a>
+            case 'paragraph':
+              return <p className="text-neutral-400 [&+p]:pt-4">{content}</p>
+          }
+        })
+        }
       </div>
 
-      <form className="pt-4 border-t border-neutral-400" action="">
-        <strong className="text-neutral-200">
+      <form className="pt-4 border-t border-neutral-700" onSubmit={event => handleOnTextSubmit(event)}>
+        <strong className="text-emerald-600 text-sm">
           Deixe seu feedback
         </strong>
 
         <textarea
-          className="w-full h-24 mt-4 border-0 bg-neutral-900 focus:border-2 focus:border-emerald-600 rounded-lg resize-none placeholder:p-4 placeholder:text-neutral-500"
+          className="w-full h-24 mt-4 p-4 border-0 bg-neutral-900
+           text-neutral-400 text-sm
+           focus:border-2 focus:border-emerald-600
+           rounded-lg resize-none
+           placeholder:text-neutral-500"
           placeholder="Escreve um comentário..."
+          value={newComment}
+          onChange={event => setNewComment(event.target.value)}
         />
 
         <button
-          className="text-white text-base bg-emerald-600 py-4 px-6 mt-4 rounded hover:bg-emerald-500 duration-100">
+          className="text-white text-base bg-emerald-600 py-4 px-6 mt-4 rounded hover:bg-emerald-500 duration-100"
+        >
           Publicar
         </button>
       </form>

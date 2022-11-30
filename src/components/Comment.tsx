@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Avatar from './Avatar';
 import {ThumbsUp, Trash} from 'phosphor-react';
 
-interface CommentProps {
+export interface CommentProps {
   id: number,
   profileImg: string,
   profile: string,
@@ -39,10 +39,10 @@ export default function Comment({id, isLiked, likeCount, content, profile, profi
               <time className="block text-neutral-300 text-xs">{time}</time>
             </div>
 
-            <button onClick={handleOnDelete}>
+          <button onClick={handleOnDelete}>
               <Trash
                 weight={'regular'}
-                className="text-neutral-400"
+                className="text-neutral-400 duration-100 hover:text-neutral-300"
                 size={24}
               />
             </button>
