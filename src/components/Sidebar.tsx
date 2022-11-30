@@ -16,7 +16,7 @@ export default function Sidebar({ bgImage, profileImg, profile, role }: Props) {
             <div className='-mt-6 flex flex-col items-center'>
                 <img className='h-12 w-12 bg-neutral-800 rounded-md box-content p-1 border-2 border-emerald-600 outline-2' src={profileImg} />
                 <strong className="text-white mt-4 leading-relaxed">{profile}</strong>
-                <span className="text-neutral-600 leading-relaxed text-sm">{role}</span>
+                <span className="text-neutral-500 leading-relaxed text-sm">{role}</span>
             </div>
 
             <footer className='mt-5 pt-6 pb-8 border-t border-neutral-600'>
