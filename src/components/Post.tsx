@@ -1,5 +1,6 @@
 import React from 'react';
 import Avatar from './Avatar';
+import Comment from './Comment';
 
 interface PostProps {
 
@@ -51,8 +52,9 @@ export default function Post(props: PostProps) {
         </button>
       </form>
 
-      <div>
-        <Avatar src="https://github.com/victorh1705.png"/>
+      <div className='mt-8'>
+        <Comment />
+        <Comment />
       </div>
 
     </article>
